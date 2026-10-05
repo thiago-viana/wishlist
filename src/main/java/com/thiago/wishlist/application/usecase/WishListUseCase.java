@@ -3,6 +3,7 @@ package com.thiago.wishlist.application.usecase;
 import com.thiago.wishlist.application.config.WishListPropertiesProvider;
 import com.thiago.wishlist.domain.entity.WishList;
 import com.thiago.wishlist.domain.exception.BusinessException;
+import com.thiago.wishlist.domain.exception.NotFoundException;
 import com.thiago.wishlist.domain.repository.WishListRepository;
 import com.thiago.wishlist.domain.vo.ProductId;
 
@@ -23,17 +24,27 @@ public class WishListUseCase {
         WishList wishList = wishListRepository.findByCustomerId(customerId)
                 .orElseGet(() -> new WishList(null, customerId, new HashSet<>()));
 
-        // TODO Validar se o produto existe na lista
         if (wishList.getProductsIds().contains(new ProductId(productId))) {
             throw new BusinessException("Product already in list");
         }
 
-        // TODO validar tamanho máximo da lista
         if (wishList.getProductsIds().size() >= wishListPropertiesProvider.getMaxProducts()) {
             throw new BusinessException("Wishlist limit reached");
         }
 
         wishList.getProductsIds().add(new ProductId(productId));
+        wishListRepository.save(wishList);
+    }
+
+    public void removeProduct(String customerId, String productId) {
+
+        WishList wishList = wishListRepository.findByCustomerId(customerId)
+                .orElseThrow(() -> new NotFoundException("Wishlist not found"));
+
+        if (!wishList.getProductsIds().remove(new ProductId(productId))) {
+            throw new NotFoundException("Product not found in wishlist");
+        }
+
         wishListRepository.save(wishList);
     }
 }
