@@ -1,13 +1,18 @@
 package com.thiago.wishlist.application.usecase;
 
 import com.thiago.wishlist.application.config.WishListPropertiesProvider;
+import com.thiago.wishlist.application.dto.ProductsIdsResponse;
 import com.thiago.wishlist.domain.entity.WishList;
 import com.thiago.wishlist.domain.exception.BusinessException;
 import com.thiago.wishlist.domain.exception.NotFoundException;
 import com.thiago.wishlist.domain.repository.WishListRepository;
 import com.thiago.wishlist.domain.vo.ProductId;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class WishListUseCase {
 
@@ -54,5 +59,20 @@ public class WishListUseCase {
                 .orElseThrow(() -> new NotFoundException("Wishlist not found"));
 
         wishListRepository.deleteByCustomerId(customerId);
+    }
+
+    public ProductsIdsResponse getAllProducts(String customerId) {
+
+        Optional<WishList> wishList = wishListRepository.findByCustomerId(customerId);
+
+        Set<ProductId> productsIds = wishList
+                .map(WishList::getProductsIds)
+                .orElseGet(Collections::emptySet);
+
+        Set<String> ids = productsIds.stream()
+                .map(ProductId::toString)
+                .collect(Collectors.toSet());
+
+        return new ProductsIdsResponse(ids);
     }
 }

@@ -1,21 +1,23 @@
 package com.thiago.wishlist.interfaces.api.controller;
 
+import com.thiago.wishlist.application.dto.ProductsIdsResponse;
 import com.thiago.wishlist.application.usecase.WishListUseCase;
+import com.thiago.wishlist.interfaces.api.dto.ProductsIdsResponseDTO;
+import com.thiago.wishlist.interfaces.api.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/wishlists")
 public class WishListController {
 
-    @Autowired
-    private WishListUseCase wishListUseCase;
+    private final WishListUseCase wishListUseCase;
+
+    public WishListController(WishListUseCase wishListUseCase) {
+        this.wishListUseCase = wishListUseCase;
+    }
 
     @PostMapping("/{customerId}/products/{productId}")
     public ResponseEntity<Void> addProduct(@PathVariable String customerId, @PathVariable String productId) {
@@ -33,5 +35,13 @@ public class WishListController {
     public ResponseEntity<Void> removeWishList(@PathVariable String customerId) {
         wishListUseCase.removeWishList(customerId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{customerId}/products")
+    public ResponseEntity<ResponseDTO<ProductsIdsResponseDTO>> getAllProducts(@PathVariable String customerId) {
+
+        ProductsIdsResponse productsIdsResponse = wishListUseCase.getAllProducts(customerId);
+        ProductsIdsResponseDTO dto = new ProductsIdsResponseDTO(productsIdsResponse.getProductsIds());
+        return ResponseEntity.ok(new ResponseDTO<>(dto, "Success", HttpStatus.OK.value()));
     }
 }
