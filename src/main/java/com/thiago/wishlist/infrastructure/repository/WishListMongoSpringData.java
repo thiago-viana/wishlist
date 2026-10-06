@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface WishListMongoSpringData extends MongoRepository<WishListDocument, String> {
 
     Optional<WishListDocument> findByCustomerId(String customerId);
+
+    void deleteByCustomerId(String customerId);
 }

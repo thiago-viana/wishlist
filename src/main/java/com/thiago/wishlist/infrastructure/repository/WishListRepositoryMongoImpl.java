@@ -30,4 +30,9 @@ public class WishListRepositoryMongoImpl implements WishListRepository {
         WishListDocument document = wishListMapper.toDocument(wishList);
         mongoRepo.save(document);
     }
+
+    @Override
+    public void deleteByCustomerId(String customerId) {
+        mongoRepo.deleteByCustomerId(customerId);
+    }
 }

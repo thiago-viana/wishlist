@@ -28,4 +28,10 @@ public class WishListController {
         wishListUseCase.removeProduct(customerId, productId);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{customerId}")
+    public ResponseEntity<Void> removeWishList(@PathVariable String customerId) {
+        wishListUseCase.removeWishList(customerId);
+        return ResponseEntity.noContent().build();
+    }
 }

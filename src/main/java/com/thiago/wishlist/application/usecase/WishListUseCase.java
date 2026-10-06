@@ -47,4 +47,12 @@ public class WishListUseCase {
 
         wishListRepository.save(wishList);
     }
+
+    public void removeWishList(String customerId) {
+
+        wishListRepository.findByCustomerId(customerId)
+                .orElseThrow(() -> new NotFoundException("Wishlist not found"));
+
+        wishListRepository.deleteByCustomerId(customerId);
+    }
 }
