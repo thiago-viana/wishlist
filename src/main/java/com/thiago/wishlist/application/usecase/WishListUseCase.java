@@ -24,16 +24,31 @@ public class WishListUseCase {
         this.wishListPropertiesProvider = wishListPropertiesProvider;
     }
 
+    private void validateCustomerId(String customerId) {
+        if (customerId == null || customerId.isBlank()) {
+            throw new IllegalArgumentException("customerId cannot be null or blank");
+        }
+    }
+
+    private void validateProductId(String productId) {
+        if (productId == null || productId.isBlank()) {
+            throw new IllegalArgumentException("productId cannot be null or blank");
+        }
+    }
+
     public void addProduct(String customerId, String productId) {
+
+        validateCustomerId(customerId);
+        validateProductId(productId);
 
         WishList wishList = wishListRepository.findByCustomerId(customerId)
                 .orElseGet(() -> new WishList(null, customerId, new HashSet<>()));
 
-        if (wishList.getProductsIds().contains(new ProductId(productId))) {
+        if (wishList.productIdExists(new ProductId(productId))) {
             throw new BusinessException("Product already in list");
         }
 
-        if (wishList.getProductsIds().size() >= wishListPropertiesProvider.getMaxProducts()) {
+        if (!wishList.canAddProductId(wishListPropertiesProvider.getMaxProducts())) {
             throw new BusinessException("Wishlist limit reached");
         }
 
@@ -42,6 +57,9 @@ public class WishListUseCase {
     }
 
     public void removeProduct(String customerId, String productId) {
+
+        validateCustomerId(customerId);
+        validateProductId(productId);
 
         WishList wishList = wishListRepository.findByCustomerId(customerId)
                 .orElseThrow(() -> new NotFoundException("Wishlist not found"));
@@ -55,6 +73,8 @@ public class WishListUseCase {
 
     public void removeWishList(String customerId) {
 
+        validateCustomerId(customerId);
+
         wishListRepository.findByCustomerId(customerId)
                 .orElseThrow(() -> new NotFoundException("Wishlist not found"));
 
@@ -62,6 +82,8 @@ public class WishListUseCase {
     }
 
     public ProductsIdsResponse getAllProducts(String customerId) {
+
+        validateCustomerId(customerId);
 
         Optional<WishList> wishList = wishListRepository.findByCustomerId(customerId);
 

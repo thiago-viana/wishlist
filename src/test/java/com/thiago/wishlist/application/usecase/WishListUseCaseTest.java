@@ -117,9 +117,14 @@ class WishListUseCaseTest {
 
         @Test
         void rejectsBlankProductId() {
-            when(wishListRepository.findByCustomerId(CUSTOMER_ID)).thenReturn(Optional.empty());
-
             assertThrows(IllegalArgumentException.class, () -> useCase.addProduct(CUSTOMER_ID, " "));
+
+            verify(wishListRepository, never()).save(any());
+        }
+
+        @Test
+        void rejectsBlankCustomerId() {
+            assertThrows(IllegalArgumentException.class, () -> useCase.addProduct(" ", "p1"));
 
             verify(wishListRepository, never()).save(any());
         }

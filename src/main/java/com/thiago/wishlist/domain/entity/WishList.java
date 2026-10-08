@@ -19,6 +19,14 @@ public class WishList {
         this.productsIds = productsIds;
     }
 
+    public boolean canAddProductId(int maxProductId) {
+        return productsIds.size() < maxProductId;
+    }
+
+    public boolean productIdExists(ProductId productId) {
+        return productsIds.contains(productId);
+    }
+
     public String getId() {
         return id;
     }
