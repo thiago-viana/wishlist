@@ -1,10 +1,9 @@
-package com.thiago.wishlist.interfaces.api.controller;
+package com.thiago.wishlist.infrastructure.web.controller;
 
 import com.thiago.wishlist.application.dto.ProductsIdsResponse;
 import com.thiago.wishlist.application.usecase.WishListUseCase;
 import com.thiago.wishlist.interfaces.api.dto.ProductsIdsResponseDTO;
 import com.thiago.wishlist.interfaces.api.dto.ResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

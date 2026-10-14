@@ -1,4 +1,4 @@
-package com.thiago.wishlist.interfaces.handler;
+package com.thiago.wishlist.infrastructure.web.handler;
 
 import com.thiago.wishlist.domain.exception.BusinessException;
 import com.thiago.wishlist.domain.exception.NotFoundException;
